@@ -1,9 +1,12 @@
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
+use fxhash::FxBuildHasher;
+
+type FxHashMap<K, V> = HashMap<K, V, FxBuildHasher>;
 
 #[derive(Debug, Default)]
 struct Node {
     at_end: bool,
-    children: HashMap<char, Node>,
+    children: FxHashMap<u8, Node>,
 }
 
 #[derive(Debug, Default)]
@@ -20,7 +23,7 @@ impl Trie {
     fn insert(&mut self, text: &str) {
         let mut current_node = &mut self.root;
 
-        for c in text.chars() {
+        for c in text.bytes() {
             current_node = current_node.children.entry(c).or_default();
         }
 
@@ -31,7 +34,7 @@ impl Trie {
     fn contains(&self, text: &str) -> bool {
         let mut current_node = &self.root;
 
-        for c in text.chars() {
+        for c in text.bytes() {
             match current_node.children.get(&c) {
                 Some(node) => current_node = node,
                 None => return false,
@@ -58,6 +61,7 @@ fn main() {
     let stub = "https://www";
     let contains_stub = urls.contains(stub);
 
-    println!("Does urls contain {stub}?\n {contains_stub}");
+    println!("Does urls contain '{stub}'?\n {contains_stub}");
     println!("{}", urls.len());
+    println!("{urls:#?}");
 }
