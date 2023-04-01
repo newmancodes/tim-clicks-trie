@@ -59,4 +59,5 @@ fn main() {
     let contains_stub = urls.contains(stub);
 
     println!("Does urls contain {stub}?\n {contains_stub}");
+    println!("{}", urls.len());
 }
